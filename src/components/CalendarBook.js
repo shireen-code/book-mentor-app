@@ -1,11 +1,10 @@
 import React, { useState, useEffect }from 'react';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
 import { Calendar, momentLocalizer} from 'react-big-calendar';
-import moment from 'moment'
+import moment from 'moment';
 import '../index.css';
 import { Modal, Col,Form, Button, ModalFooter} from "react-bootstrap";
 import DatePicker from "react-datepicker";
-
 const CalendarBook = () => {
   const [start, setStart] = React.useState(null);
   const [end, setEnd] = React.useState(null);
@@ -17,30 +16,16 @@ const CalendarBook = () => {
   const hideModals = () => {
     setShowAddModal(false);
   };
-var data;
- 
-  // const dummyEvents = [
-  //   {
-  //     allDay: false,
-  //     endDate: new Date('December 10, 2022 11:13:00'),
-  //     startDate: new Date('December 09, 2022 11:13:00'),
-  //     title: 'hi',
-  //   },
-  //   {
-  //     allDay: true,
-  //     endDate: new Date('December 09, 2022 11:13:00'),
-  //     startDate: new Date('December 09, 2022 11:13:00'),
-  //     title: 'All Day Event',
-  //   },
-  //   ];
- 
   
     const minTime = new Date();
     minTime.setHours(6,0,0);
     const maxTime = new Date();
     maxTime.setHours(22,0,0);
-    const [events, setEvents] = useState([]);
 
+    const [events, setEvents] = useState([]);
+    const handleStartChange = date => setStart(date);
+    const handleEndChange = date => setEnd(date);
+    const handleReasonChange = ev => setReason(ev.target.value);
     const handleSelect = (event) => {
       setShowAddModal(true);
       let { start, end, reason } = event;
@@ -51,7 +36,21 @@ var data;
       setEnd(data.end);
       setReason(data.reason);
     };
-  
+    const handleSubmit = async (e) => {
+      e.preventDefault();
+      const data = { start, end, reason };
+      const requestOptions = {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data)
+      };
+      const response = await fetch('https://private-37dacc-cfcalendar.apiary-mock.com/mentors/1/agenda', requestOptions);
+      const result = await response.json();
+      console.log("Your session has been booked");
+      hideModals();
+      alert(`Time-${result.start},
+          Reason-${ result.reason}`)
+    }
   const localizer = momentLocalizer(moment);
   let todos;
   useEffect(() => {
@@ -86,6 +85,8 @@ var data;
   return (
   
  <div className="sampleBook">  
+        <nav/>
+
        <Modal 
         show={showAddModal} 
         onHide={hideModals}>
@@ -93,7 +94,7 @@ var data;
           <Modal.Title>Book A Call with a Mentor</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <Form noValidate>
+          <Form noValidate onSubmit={handleSubmit}>
           <Form.Row>
               <Form.Group as={Col} md="12" controlId="start">
                 <Form.Label>Start</Form.Label>
@@ -108,7 +109,7 @@ var data;
                   showTimeSelect
                   className="form-control"
                   selected={start}
-                  //onChange={handleStartChange}
+                  onChange={handleStartChange}
                 />
               </Form.Group>
             </Form.Row>
@@ -120,7 +121,7 @@ var data;
                   showTimeSelect
                   className="form-control"
                   selected={end}
-                  //onChange={handleEndChange}
+                  onChange={handleEndChange}
                 />
               </Form.Group>
             </Form.Row>
@@ -133,7 +134,7 @@ var data;
                   autoFocus
                   placeholder="Reason"
                   value={reason || ""}
-                 // onChange={handleReasonChange}
+                  onChange={handleReasonChange}
                   isInvalid={!reason}
                 />
                 <Form.Control.Feedback type="invalid">{!reason}</Form.Control.Feedback>
@@ -149,6 +150,7 @@ var data;
         </Modal.Body>
       </Modal>  
    <h2 className='text-center text-primary pb-3 pt-2'> Book A Mentor  </h2>
+   <navBook/>
 
       <Calendar
         events ={event}
