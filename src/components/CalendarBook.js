@@ -12,13 +12,8 @@ const CalendarBook = () => {
   const [showAddModal, setShowAddModal] = React.useState(false);
 
   const [reason, setReason] = React.useState("");
-  const Globallocalizer = momentLocalizer(moment);
 
-  const [trainings, setTrainings] = useState([]);
 
-  useEffect(() => {
-    getTrainings()
-  });
   const hideModals = () => {
     setShowAddModal(false);
   };
@@ -154,15 +149,7 @@ var data;
         </Modal.Body>
       </Modal>  
    <h2 className='text-center text-primary pb-3 pt-2'> Book A Mentor  </h2>
-   <Calendar
-        localizer={Globallocalizer}
-        events={trainings}
-        resourceTitleAccessor='resource'
-        startAccessor='start'
-        endAccessor='end'
-        views={['month', 'week', 'day']}
-        style={{height: 450}}
-        />
+
       <Calendar
         events ={event}
         formats={{ dateFormat: 'yyyy, mm, dd' }}
