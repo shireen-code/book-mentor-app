@@ -22,3 +22,5 @@ then run
 ```
 
 Then open a web page and go to [port 3000 on your local machine.](http://localhost:3000)
+
+The web application is deployed at https://unrivaled-semifreddo-1b23d4.netlify.app/
